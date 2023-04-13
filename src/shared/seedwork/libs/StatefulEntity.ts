@@ -11,7 +11,9 @@ export class StatefulEntity<T extends ID, R> extends Entity<T>{
 
     constructor(props: EntityProps<R>) {
         super(props.id)
-        this.state = new State<R>({ ...props })
+        this.state = new State<R>({ 
+            state: { ...props }
+        })
     }
 
 }

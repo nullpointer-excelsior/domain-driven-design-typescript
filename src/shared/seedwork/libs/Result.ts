@@ -20,6 +20,10 @@ export class Success<T, E> {
     isError(): this is Failure<T, E> {
         return false;
     }
+
+    isSuccess(): this is Success<T, E> {
+        return true;
+    }
     
     match<U>(onSuccess: (value: T) => U, onFailure: (error: E) => U): U {
         return onSuccess(this.success);
@@ -45,6 +49,10 @@ export class Failure<T, E> {
 
     isError(): this is Failure<T, E> {
         return true;
+    }
+
+    isSuccess(): this is Success<T, E> {
+        return false;
     }
 
     match<U>(onSuccess: (value: T) => U, onFailure: (error: E) => U): U {

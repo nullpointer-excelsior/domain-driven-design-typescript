@@ -1,38 +1,45 @@
+import { EntityState } from "../EntityState";
 
-export type StateListener<T> = (state: T) => T;
+export type StateListener<T> = (state: T) => void;
 
-export interface StateAccesors<T> {
-    get(): T;
-    set(state: T): void;
-    reduce(reducer: (prevState: T) => T): void;
+interface StateOptions<T> {
+    state: T;
+    onBeforeUpdate?: StateListener<T>[];
+    onAfterUpdate?: StateListener<T>[];
 }
 
-export class State<T> implements StateAccesors<T> {
+export class State<T> implements EntityState<T> {
 
     private state: T;
-    private beforeUpdateListeners: StateListener<T>[] = []
-    private afterUpdateListeners: StateListener<T>[] = []
+    private onBeforeUpdateListeners: StateListener<T>[] = []
+    private onAfterUpdateListeners: StateListener<T>[] = []
 
-    constructor(state: T) {
+    constructor(options: StateOptions<T>) {
+        
+        const { onAfterUpdate, onBeforeUpdate, state } = options
+        this.onBeforeUpdateListeners = onBeforeUpdate ? onBeforeUpdate : []
+        this.onAfterUpdateListeners = onAfterUpdate ? onAfterUpdate : []
+
         this.onBeforeUpdateState(state)
         this.state = state
         this.onAfterUpdateState(state)
+
     }
 
     addBeforeUpdateListener(listener: StateListener<T>) {
-        this.beforeUpdateListeners.push(listener)
+        this.onBeforeUpdateListeners.push(listener)
     }
 
     addAfterUpdateListener(listener: StateListener<T>) {
-        this.afterUpdateListeners.push(listener)
+        this.onAfterUpdateListeners.push(listener)
     }
 
-    onBeforeUpdateState(state: T) {
-        this.beforeUpdateListeners.forEach(listener => listener(state))
+    private onBeforeUpdateState(state: T) {
+        this.onBeforeUpdateListeners.forEach(listener => listener(state))
     }
 
-    onAfterUpdateState(state: T) {
-        this.afterUpdateListeners.forEach(listener => listener(state))
+    private onAfterUpdateState(state: T) {
+        this.onAfterUpdateListeners.forEach(listener => listener(state))
     }
 
     get(): T {
@@ -51,5 +58,6 @@ export class State<T> implements StateAccesors<T> {
         this.state = { ...newstate }
         this.onAfterUpdateState(this.state)
     }
+
 
 }

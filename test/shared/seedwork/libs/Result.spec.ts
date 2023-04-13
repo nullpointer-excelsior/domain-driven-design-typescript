@@ -13,10 +13,9 @@ describe('Result', () => {
     it('should return a Success result', () => {
         const result = divide(10, 2)
         expect(result.isError()).toBeFalsy()
-        if (!result.isError()) {
+        if (result.isSuccess()) {
             expect(result.success).toBe(5)
         }
-
     });
 
     it('should return a Failure result', () => {

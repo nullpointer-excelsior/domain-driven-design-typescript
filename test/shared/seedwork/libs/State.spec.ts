@@ -6,7 +6,9 @@ describe('State', () => {
 
     beforeEach(() => {
         initialState = { count: 0 };
-        state = new State(initialState);
+        state = new State({
+            state: initialState,
+        });
     });
 
     describe('addBeforeUpdateListener', () => {
@@ -48,6 +50,7 @@ describe('State', () => {
         it('should dont mutate the state', () => {
             state.get().count = 1
             expect(state.get()).toEqual(initialState);
+            
         });
     });
 });
